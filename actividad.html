@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Formatos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ecf0f1;
+            padding: 30px 15px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .validation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3498db;
+        }
+
+        .card-header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .check-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .result-display.show {
+            opacity: 1;
+        }
+
+        .result-success {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .result-error {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+
+        .card-email {
+            border-left-color: #e74c3c;
+        }
+
+        .card-hex {
+            border-left-color: #f39c12;
+        }
+
+        .card-decimal {
+            border-left-color: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="main-title">Verificador de Formatos</h1>
+
+    <div class="cards-container">
+        <!-- Card Email -->
+        <div class="validation-card card-email">
+            <div class="card-header">Verificar Email</div>
+            <div class="input-group">
+                <input type="text" class="form-input" id="mailInput" placeholder="Escriba su correo institucional aquí">
+                <button class="check-button" onclick="verifyEmail()">Verificar Correo</button>
+            </div>
+            <div id="mailResult" class="result-display"></div>
+        </div>
+
+        <!-- Card Hexadecimal -->
+        <div class="validation-card card-hex">
+            <div class="card-header">Verificar Hexadecimal</div>
+            <div class="input-group">
+                <input type="text" class="form-input" id="colorInput" placeholder="Escriba el código de color hexadecimal">
+                <button class="check-button" onclick="verifyHexadecimal()">Verificar Color</button>
+            </div>
+            <div id="colorResult" class="result-display"></div>
+        </div>
+
+        <!-- Card Decimal -->
+        <div class="validation-card card-decimal">
+            <div class="card-header">Verificar Decimal</div>
+            <div class="input-group">
+                <input type="text" class="form-input" id="numberInput" placeholder="Escriba el número decimal (formato X,X)">
+                <button class="check-button" onclick="verifyDecimal()">Verificar Número</button>
+            </div>
+            <div id="numberResult" class="result-display"></div>
+        </div>
+    </div>
+
+    <script>
+        function setResult(elementId, isCorrect, message) {
+            const element = document.getElementById(elementId);
+            element.className = `result-display ${isCorrect ? 'result-success' : 'result-error'} show`;
+            element.textContent = message;
+        }
+
+        function verifyEmail() {
+            const value = document.getElementById('mailInput').value.trim();
+            
+            const curnvirtualRegex = /^[a-z]+\d{1,2}@curnvirtual\.edu\.co$/;
+            const curnRegex = /^[aeiouAEIOU][a-zA-Z]*[._][a-zA-Z]*@curn\.edu\.co$/;
+            
+            const isCorrect = curnvirtualRegex.test(value) || curnRegex.test(value);
+            
+            setResult('mailResult', isCorrect, 
+                isCorrect ? 'Correo institucional válido ✓' : 'Formato de correo incorrecto ✗'
+            );
+        }
+
+        function verifyHexadecimal() {
+            const value = document.getElementById('colorInput').value.trim();
+            const hexRegex = /^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/;
+            
+            const isCorrect = hexRegex.test(value);
+            
+            setResult('colorResult', isCorrect,
+                isCorrect ? 'Código hexadecimal válido ✓' : 'Formato hexadecimal incorrecto ✗'
+            );
+        }
+
+        function verifyDecimal() {
+            const value = document.getElementById('numberInput').value.trim();
+            const decimalRegex = /^[0-4],\d$|^5,0$/;
+            
+            const isCorrect = decimalRegex.test(value);
+            
+            setResult('numberResult', isCorrect,
+                isCorrect ? 'Número decimal válido ✓' : 'Número fuera del rango permitido ✗'
+            );
+        }
+
+        // Enter key functionality
+        ['mailInput', 'colorInput', 'numberInput'].forEach(inputId => {
+            document.getElementById(inputId).addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    const buttonMap = {
+                        'mailInput': verifyEmail,
+                        'colorInput': verifyHexadecimal,
+                        'numberInput': verifyDecimal
+                    };
+                    buttonMap[inputId]();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
